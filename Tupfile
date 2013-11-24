@@ -1,0 +1,8 @@
+.gitignore
+
+CFLAGS += -Wall
+CFLAGS += -O
+
+:foreach Source/*.rl |> ragel -V %f | dot -Tpng -o%o |> Documentation/%B.png
+:foreach Source/*.rl |> ragel -o %o %f |> Source/%B.rl.c
+:foreach Source/*.c |> clang $(CFLAGS) -c %f -o %o |> obj/%B.o

@@ -13,7 +13,9 @@
 //	TODO: Read http://yaml.org/spec/1.0/
 
 void *yaml_scan(const char *input) {
-	int linecount = 0;
+	int cs, linecount = 0;
+	char *p = input,
+		*pe = p+strlen(input);
 	%%{
 		write init;
 		write exec;
