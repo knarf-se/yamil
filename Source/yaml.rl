@@ -3,16 +3,24 @@
 #include <stdio.h>
 
 %%{	machine	yamlparser;
-	fract = '.' digit*;
+	fract = '.' digit+;
 	nl = '\n' @{linecount += 1;};
+	sign = '+'|'-';
+	exponent = [eE] sign digit+;
+	Real = (sign? digit+ fract?)|fract;
 	Scalar = fract | digit;
 	Sequence = ('- '.Scalar)*;
-	main := (Scalar nl?)*;
+	Document = (Scalar nl?)*;
+	main := (Document '---')* | Document '...'?;
 	write data nofinal;
 }%%
 //	TODO: Read http://yaml.org/spec/1.0/
 
-void *yaml_scan(const char *input) {
+/*!	Scan a string and return a set of YAML documents
+
+	\parameter input The Z-terminated string to scan.
+	\retruns a graph-structure representing the input.
+*/void *yaml_scan(const char *input) {
 	int cs, linecount = 0;
 	char *p = input,
 		*pe = p+strlen(input);
